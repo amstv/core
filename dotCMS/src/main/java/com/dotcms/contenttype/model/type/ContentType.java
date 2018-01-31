@@ -1,5 +1,8 @@
 package com.dotcms.contenttype.model.type;
 
+import com.dotmarketing.exception.DotSecurityException;
+import com.dotmarketing.util.Logger;
+import com.dotmarketing.util.UtilMethods;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
@@ -231,18 +234,19 @@ public abstract class ContentType implements Serializable, Permissionable, Conte
   @Value.Lazy
   public Permissionable getParentPermissionable() {
     try{
-      if (!FolderAPI.SYSTEM_FOLDER.equals(this.folder())) {
+      if (Host.SYSTEM_HOST.equals(this.host())) {
         Folder folder = new Folder();
-        folder.setIdentifier(this.host());
-        folder.setInode(this.host());
+        folder.setIdentifier(this.folder());
+        folder.setInode(this.folder());
+        folder.setHostId(this.host());
         return folder;
       } else{
         Host host = new Host();
-        host.setIdentifier(this.folder());
-        host.setInode(this.folder());
+        host.setIdentifier(this.host());
+        host.setInode(this.host());
+        host.setHost(Host.SYSTEM_HOST);
         return host;
       }
-
     }catch (Exception e) {
       throw new DotRuntimeException(e.getMessage(), e);
     }
